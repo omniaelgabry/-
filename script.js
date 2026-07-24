@@ -178,28 +178,15 @@ document.querySelector('.gold-btn').addEventListener('click', () => {
 document.querySelector('.gold-btn').addEventListener('click', () => {
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
-      // تمرير كائن فاضي أو تسجيل وهمي يمنع الفايربيز من البحث عن الملف الافتراضي
-      navigator.serviceWorker.register('data:text/javascript,').then(registration => {
-        messaging.getToken({ 
-          vapidKey: 'BAQ03NdH_kjTxMBPS4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c',
-          serviceWorkerRegistration: registration 
-        }).then((currentToken) => {
-          if (currentToken) {
-            alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
-            console.log('Token:', currentToken);
-          } else {
-            alert('لم يتم العثور على توكن الإشعارات.');
-          }
-        }).catch((err) => {
-          console.error('Error:', err);
-          alert('تم السماح بالإشعارات بنجاح!');
-        });
-      }).catch(err => {
-        console.error(err);
-        alert('تم تفعيل إذن الإشعارات بنجاح.');
+      // تفعيل إشعارات المتصفح المباشرة بدون الحاجة لسيرفر أو ملفات وهمية تعاند الفايربيز
+      alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+      new Notification('✨️الرفيق اليومي✨️', {
+        body: 'تم تفعيل التنبيهات بنجاح، نسألكم الدعاء!',
+        icon: ''
       });
     } else {
       alert('تم رفض إذن الإشعارات.');
     }
   });
+});
 });
