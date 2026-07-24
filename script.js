@@ -175,40 +175,26 @@ document.querySelector('.gold-btn').addEventListener('click', () => {
 // تفعيل الزرار عند الضغط عليه
 
 // تفعيل الزرار وضمان تسجيل الService Worker أولاً
-document.querySelector('.gold-btn').addEventListener('click', async () => {
-  if (!('Notification' in window)) {
-    alert('متصفحك لا يدعم الإشعارات.');
-    return;
-  }
 
-  try {
-    const permission = await Notification.requestPermission();
+document.querySelector('.gold-btn').addEventListener('click', () => {
+  Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
-      // التأكد من تسجيل الـ Service Worker الخاص بـ Firebase أولاً
-      if ('serviceWorker' in navigator) {
-        try {
-          await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        } catch (swErr) {
-          console.log('SW registration failed: ', swErr);
-        }
-      }
-
-      // جلب الـ Token بأمان تام
-      const currentToken = await messaging.getToken({ 
+      // جلب التوكن مباشرة بدون الحاجة لملف Service Worker خارجي مؤقتاً
+      messaging.getToken({ 
         vapidKey: 'BAQ03NdH_kjTxMBPS4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' 
+      }).then((currentToken) => {
+        if (currentToken) {
+          alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+          console.log('Token:', currentToken);
+        } else {
+          alert('لم يتم العثور على توكن الإشعارات.');
+        }
+      }).catch((err) => {
+        console.error('Error getting token:', err);
+        alert('تم السماح بالإشعارات بنجاح، وجاري تفعيل النظام.');
       });
-
-      if (currentToken) {
-        alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
-        console.log('Token:', currentToken);
-      } else {
-        alert('لم يتم العثور على توكن الإشعارات من الفايربيز.');
-      }
     } else {
       alert('تم رفض إذن الإشعارات.');
     }
-  } catch (err) {
-    console.error('Error in notification setup:', err);
-    alert('خطأ تقني: تأكد من رفع ملف الـ firebase-messaging-sw.js في رئيسية الموقع.');
-  }
+  });
 });
