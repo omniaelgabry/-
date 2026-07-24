@@ -176,17 +176,17 @@ document.querySelector('.gold-btn').addEventListener('click', () => {
 
 // تفعيل الزرار وضمان تسجيل الService Worker أولاً
 document.querySelector('.gold-btn').addEventListener('click', () => {
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      // تفعيل إشعارات المتصفح المباشرة بدون الحاجة لسيرفر أو ملفات وهمية تعاند الفايربيز
-      alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
-      new Notification('✨️الرفيق اليومي✨️', {
-        body: 'تم تفعيل التنبيهات بنجاح، نسألكم الدعاء!',
-        icon: ''
-      });
-    } else {
-      alert('تم رفض إذن الإشعارات.');
-    }
-  });
-});
+  alert('الزرار شغال وبيستجيب تماماً! ✅');
+  
+  if ('Notification' in window) {
+    Notification.requestPermission().then((permission) => {
+      if (permission === 'granted') {
+        alert('تم تفعيل الإذن بنجاح! 🔔');
+      } else {
+        alert('تم رفض إذن الإشعارات من المتصفح.');
+      }
+    });
+  } else {
+    alert('متصفحك لا يدعم الإشعارات.');
+  }
 });
