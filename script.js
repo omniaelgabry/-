@@ -173,29 +173,42 @@ document.querySelector('.gold-btn').addEventListener('click', () => {
 
 
 // تفعيل الزرار عند الضغط عليه
-document.querySelector('.gold-btn').addEventListener('click', () => {
-  Notification.requestPermission().then((permission) => {
+
+// تفعيل الزرار وضمان تسجيل الService Worker أولاً
+document.querySelector('.gold-btn').addEventListener('click', async () => {
+  if (!('Notification' in window)) {
+    alert('متصفحك لا يدعم الإشعارات.');
+    return;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
     if (permission === 'granted') {
-      console.log('Notification permission granted.');
-      
-      messaging.getToken({ 
-        vapidKey: 'BAQ03NdH_kjTxMBPS4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' 
-      }).then((currentToken) => {
-        if (currentToken) {
-          alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
-          console.log('Token:', currentToken);
-        } else {
-          console.log('No registration token available.');
-          alert('لم يتم العثور على توكن الإشعارات.');
+      // التأكد من تسجيل الـ Service Worker الخاص بـ Firebase أولاً
+      if ('serviceWorker' in navigator) {
+        try {
+          await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        } catch (swErr) {
+          console.log('SW registration failed: ', swErr);
         }
-      }).catch((err) => {
-        // السطر ده هيخلي الخطأ الحقيقي يظهر فوراً في الـ Console عندك
-        console.error('An error occurred while retrieving token: ', err);
-        alert('خطأ في جلب التوكن: ' + err.message);
+      }
+
+      // جلب الـ Token بأمان تام
+      const currentToken = await messaging.getToken({ 
+        vapidKey: 'BAQ03NdH_kjTxMBPS4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' 
       });
 
+      if (currentToken) {
+        alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+        console.log('Token:', currentToken);
+      } else {
+        alert('لم يتم العثور على توكن الإشعارات من الفايربيز.');
+      }
     } else {
       alert('تم رفض إذن الإشعارات.');
     }
-  });
+  } catch (err) {
+    console.error('Error in notification setup:', err);
+    alert('خطأ تقني: تأكد من رفع ملف الـ firebase-messaging-sw.js في رئيسية الموقع.');
+  }
 });
