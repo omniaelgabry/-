@@ -51,8 +51,27 @@ header p { color: var(--text-muted); }
 
 .quran-section { grid-column: span 1; }
 @media(min-width: 900px) { .quran-section { grid-column: span 2; } }
-.quran-controls { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
-.quran-controls select { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ddd; }
+.quran-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 900px) {
+    .quran-controls {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .quran-controls select {
+        flex: 1;
+    }
+    .quran-controls button, 
+    .quran-controls .gold-btn {
+        flex-shrink: 0;
+    }
+}
 .quran-text-box { max-height: 300px; overflow-y: auto; padding: 15px; background-color: var(--bg-color); border-radius: 8px; line-height: 2.2; font-size: 1.1rem; }
 .ayah-item { display: inline; cursor: pointer; padding: 2px 4px; border-radius: 4px; }
 .ayah-item:hover { background-color: var(--light-green); }
