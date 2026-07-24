@@ -6,57 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initNotificationsButton();
 });
 
-// تفعيل إشعارات المتصفح
-async function initNotificationsButton() {
-    const notifyBtn = document.getElementById("notify-permission-btn");
-    notifyBtn.addEventListener("click", async () => {
-        if (!("Notification" in window) || !("serviceWorker" in navigator)) {
-            alert("متصفحك لا يدعم الإشعارات");
-            return;
-        }
-        
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-            try {
-                const register = await navigator.serviceWorker.register('/sw.js');
-                const response = await fetch('http://localhost:3000/api/vapidPublicKey');
-                const vapidPublicKey = await response.text();
-                const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
-
-                const subscription = await register.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: convertedVapidKey
-                });
-
-                await fetch('http://localhost:3000/api/subscribe', {
-                    method: 'POST',
-                    body: JSON.stringify(subscription),
-                    headers: { 'content-type': 'application/json' }
-                });
-
-                alert("تم تفعيل إشعارات الصلاة بنجاح! 🔔");
-                new Notification("✨️الرفيق اليومي✨️", { body: "تم الربط مع الخادم بنجاح!" });
-            } catch (error) {
-                console.error("Error setting up push notifications:", error);
-                alert("حدث خطأ أثناء تفعيل الإشعارات من السيرفر.");
-            }
-        } else {
-            alert("تم رفض إذن الإشعارات.");
-        }
-    });
-}
-
-function urlBase64ToUint8Array(base64String) {
-  const padding = '='.repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
-}
-
 // مواقيت الصلاة
 async function initPrayerTimes() {
     const nextPrayerBox = document.getElementById("next-prayer-box");
@@ -119,7 +68,7 @@ async function initQuranSection() {
     const loadBtn = document.getElementById("load-surah-btn");
     const bookmarkInfo = document.getElementById("bookmark-info");
 
-    if (!surahSelect) return; // In case we are not on index.html
+    if (!surahSelect) return;
 
     try {
         const response = await fetch("https://api.alquran.cloud/v1/surah");
@@ -146,14 +95,12 @@ async function initQuranSection() {
                 alert("الرجاء اختيار سورة أولاً");
                 return;
             }
-            // التوجيه إلى الصفحة الجديدة
             window.location.href = `surah.html?id=${num}`;
         });
     }
 }
 
-
-// إعدادات المشروع
+// إعدادات الفايربيز وتفعيل الإشعارات بالزر الذهبي
 const firebaseConfig = {
   apiKey: "AIzaSyCfQo-1AJ73HbZhDqPiJxqkN06VpVv-9o",
   authDomain: "quraan-dce7d.firebaseapp.com",
@@ -168,26 +115,29 @@ if (!firebase.apps.length) {
 }
 const messaging = firebase.messaging();
 
-// تفعيل الزرار عند الضغط عليه
-document.querySelector('.gold-btn').addEventListener('click', () => {
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      console.log('Notification permission granted.');
-      
-      // استبدلي كلمة "حطي_هنا_المفتاح_الطويل_اللي_نسختيه" بمفتاح الـ VAPID اللي جبتيه من إعدادات الفايربيز
-      messaging.getToken({ vapidKey: 'BAQ03NdH_kjTxMBPSx4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' }).then((currentToken) => {
-        if (currentToken) {
-          alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
-          console.log('Token:', currentToken);
-        } else {
-          console.log('No registration token available.');
-        }
-      }).catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
-      });
+function initNotificationsButton() {
+    const notifyBtn = document.querySelector('.gold-btn');
+    if (!notifyBtn) return;
 
-    } else {
-      alert('تم رفض إذن الإشعارات.');
-    }
-  });
-});
+    notifyBtn.addEventListener('click', () => {
+        Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+                messaging.getToken({ 
+                    vapidKey: 'BAQ03NdH_kjTxMBPSx4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' 
+                }).then((currentToken) => {
+                    if (currentToken) {
+                        alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+                        console.log('Token:', currentToken);
+                    } else {
+                        alert('لم يتم العثور على توكن الإشعارات.');
+                    }
+                }).catch((err) => {
+                    console.error('Error getting token:', err);
+                    alert('حدث خطأ أثناء جلب التوكن.');
+                });
+            } else {
+                alert('تم رفض إذن الإشعارات.');
+            }
+        });
+    });
+}
