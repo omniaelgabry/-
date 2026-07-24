@@ -141,3 +141,32 @@ function initNotificationsButton() {
         });
     });
 }
+
+
+// تفعيل الزرار عند الضغط عليه
+document.querySelector('.gold-btn').addEventListener('click', () => {
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      
+      messaging.getToken({ 
+        vapidKey: 'BAQ03NdH_kjTxMBPS4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' 
+      }).then((currentToken) => {
+        if (currentToken) {
+          alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+          console.log('Token:', currentToken);
+        } else {
+          console.log('No registration token available.');
+          alert('لم يتم العثور على توكن الإشعارات.');
+        }
+      }).catch((err) => {
+        // السطر ده هيخلي الخطأ الحقيقي يظهر فوراً في الـ Console عندك
+        console.error('An error occurred while retrieving token: ', err);
+        alert('خطأ في جلب التوكن: ' + err.message);
+      });
+
+    } else {
+      alert('تم رفض إذن الإشعارات.');
+    }
+  });
+});
