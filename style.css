@@ -114,3 +114,45 @@ footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-si
     text-align: center;
     color: var(--text-muted);
 }
+
+/* --- تظبيط شاشة الترحيب (الإنترو) عشان العنوان يظهر كامل ومنتظم --- */
+.intro-content h1 {
+    font-size: 1.8rem; /* تصغير حجم الخط قليلاً ليناسب الشاشات الصغيرة */
+    line-height: 1.4;
+    padding: 0 15px;
+}
+
+.intro-content p {
+    font-size: 0.95rem;
+    margin-top: 10px;
+}
+
+/* --- تظبيط الهيدر الرئيسي والمحتوى --- */
+header h1 {
+    font-size: 1.8rem;
+}
+
+.main-container {
+    padding: 10px;
+}
+
+/* --- تظبيط مسافات صفوف الصلوات عشان متبقاش متداخلة --- */
+.prayer-tracker ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 5px;
+    gap: 10px;
+}
+
+.prayer-tracker ul li span {
+    font-size: 1rem;
+    flex: 1;
+    text-align: right;
+}
+
+.pray-btn {
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+}
