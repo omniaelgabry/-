@@ -151,3 +151,43 @@ async function initQuranSection() {
         });
     }
 }
+
+
+// إعدادات المشروع
+const firebaseConfig = {
+  apiKey: "AIzaSyCfQo-1AJ73HbZhDqPiJxqkN06VpVv-9o",
+  authDomain: "quraan-dce7d.firebaseapp.com",
+  projectId: "quraan-dce7d",
+  storageBucket: "quraan-dce7d.firebasestorage.app",
+  messagingSenderId: "1078911623599",
+  appId: "1:1078911623599:web:2c8d1302324ce70ca44f5a"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const messaging = firebase.messaging();
+
+// تفعيل الزرار عند الضغط عليه
+document.querySelector('.gold-btn').addEventListener('click', () => {
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+      
+      // استبدلي كلمة "حطي_هنا_المفتاح_الطويل_اللي_نسختيه" بمفتاح الـ VAPID اللي جبتيه من إعدادات الفايربيز
+      messaging.getToken({ vapidKey: 'BAQ03NdH_kjTxMBPSx4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c' }).then((currentToken) => {
+        if (currentToken) {
+          alert('تم تفعيل إشعارات الصلوات بنجاح! 🔔');
+          console.log('Token:', currentToken);
+        } else {
+          console.log('No registration token available.');
+        }
+      }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+      });
+
+    } else {
+      alert('تم رفض إذن الإشعارات.');
+    }
+  });
+});
