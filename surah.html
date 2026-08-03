@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قراءة السورة - ✨️الرفيق اليومي✨️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: var(--bg-color);
+            padding: 20px;
+        }
+        .surah-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .back-btn {
+            background-color: var(--primary-green);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            transition: opacity 0.2s;
+        }
+        .back-btn:hover {
+            opacity: 0.9;
+        }
+        .quran-fullscreen {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            direction: rtl;
+            text-align: right;
+            line-height: 2.6;
+            font-size: 1.8rem;
+            color: #1a3317;
+            font-family: 'Amiri Quran', serif;
+            min-height: 70vh;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .bismillah-text {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: var(--primary-green);
+        }
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .quran-fullscreen {
+                padding: 20px;
+                font-size: 1.6rem;
+            }
+            .surah-page-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+        .loader {
+            text-align: center;
+            font-family: 'Cairo', sans-serif;
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="surah-page-header">
+        <h1 id="surah-title" class="surah-title-header" style="border: none; margin: 0; padding: 0;">جاري التحميل...</h1>
+        <a href="index.html" class="back-btn">العودة للرئيسية</a>
+    </div>
+    
+    <div id="quran-container" class="quran-fullscreen">
+        <div class="loader">جاري تحميل السورة الكريمة...</div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahId = urlParams.get('id');
+            const container = document.getElementById("quran-container");
+            const titleElem = document.getElementById("surah-title");
+
+            if (!surahId) {
+                container.innerHTML = "<p style='text-align:center; font-family: Cairo;'>لم يتم تحديد السورة. الرجاء العودة للرئيسية واختيار سورة.</p>";
+                titleElem.textContent = "خطأ";
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahId}`);
+                const data = await res.json();
+                const surahData = data.data;
+                
+                titleElem.textContent = `سورة ${surahData.name}`;
+                container.innerHTML = "";
+                
+                // إضافة البسملة إذا لم تكن سورة الفاتحة (1) أو سورة التوبة (9)
+                if (surahId != 1 && surahId != 9) {
+                    const bismillah = document.createElement("div");
+                    bismillah.className = "bismillah-text";
+                    bismillah.textContent = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ";
+                    container.appendChild(bismillah);
+                }
+
+                const textWrapper = document.createElement("div");
+                
+                surahData.ayahs.forEach(ayah => {
+                    let text = ayah.text;
+                    // إزالة البسملة من أول آية إذا كانت مدمجة (يحدث في الـ API باستثناء الفاتحة)
+                    if (surahId != 1 && ayah.numberInSurah === 1) {
+                        text = text.replace("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ", "");
+                        text = text.replace("بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ", "");
+                    }
+
+                    const span = document.createElement("span");
+                    span.className = "ayah-item";
+                    span.textContent = `${text} ﴿${ayah.numberInSurah}﴾ `;
+                    
+                    // حفظ العلامة المرجعية عند الضغط على أي آية
+                    span.addEventListener("click", () => {
+                        localStorage.setItem("quran_bookmark", JSON.stringify({ surah: surahData.name, ayah: ayah.numberInSurah }));
+                        alert(`📌 تم حفظ العلامة: سورة ${surahData.name} - آية ${ayah.numberInSurah}\nيمكنك العودة للرئيسية لرؤية العلامة.`);
+                    });
+
+                    textWrapper.appendChild(span);
+                });
+
+                container.appendChild(textWrapper);
+            } catch (e) {
+                container.innerHTML = "<p style='text-align:center; font-family: Cairo;'>حدث خطأ أثناء تحميل الآيات.</p>";
+                titleElem.textContent = "خطأ";
+            }
+        });
+    </script>
+</body>
+</html>
