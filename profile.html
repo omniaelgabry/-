@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - ✨️الرفيق اليومي✨️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 20px; }
+        .profile-header {
+            display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto 20px;
+        }
+        .back-btn { background-color: var(--primary-green); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .profile-container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .profile-card {
+            background-color: var(--card-bg); border-radius: 12px; padding: 30px;
+            box-shadow: var(--shadow); border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .avatar {
+            width: 80px; height: 80px; border-radius: 50%; background-color: var(--gold);
+            color: white; font-size: 2.5rem; display: flex; justify-content: center; align-items: center;
+            margin: 0 auto 15px; font-weight: bold;
+        }
+        .profile-name { font-size: 1.5rem; color: var(--text-dark); margin-bottom: 5px; }
+        .profile-email { font-size: 1rem; color: var(--text-muted); margin-bottom: 25px; }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-box { background-color: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        .stat-label { font-size: 0.9rem; color: var(--text-muted); }
+
+        .edit-form { display: none; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .edit-input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-dark); }
+        
+        .logout-btn { background-color: #ff4757; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: opacity 0.2s; }
+        .logout-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <script>
+        if(localStorage.getItem("app_theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+        }
+    </script>
+
+    <div class="profile-header">
+        <h1 style="color: var(--primary-green); font-size: 1.8rem;">الملف الشخصي</h1>
+        <a href="index.html" class="back-btn">العودة للرئيسية</a>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-card">
+            <div id="loading-msg">جاري تحميل البيانات...</div>
+            
+            <div id="profile-content" style="display: none;">
+                <div class="avatar" id="user-avatar">👤</div>
+                <h2 class="profile-name" id="user-name">الاسم</h2>
+                <p class="profile-email" id="user-email">email@example.com</p>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-streak">0 🔥</div>
+                        <div class="stat-label">أيام متتالية</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="stat-misbaha">0</div>
+                        <div class="stat-label">إجمالي التسبيح</div>
+                    </div>
+                </div>
+
+                <div class="edit-form" id="edit-form">
+                    <input type="text" id="edit-name-input" class="edit-input" placeholder="الاسم الجديد">
+                    <div style="display: flex; gap: 10px;">
+                        <button id="save-btn" class="gold-btn" style="flex: 1;">حفظ التعديل</button>
+                        <button id="cancel-edit-btn" class="outline-btn" style="flex: 1;">إلغاء</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button id="edit-btn" class="outline-btn">تعديل الملف الشخصي ✏️</button>
+                    <button id="logout-btn" class="logout-btn">تسجيل الخروج 🚪</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="profile.js"></script>
+</body>
+</html>
