@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨️الرفيق اليومي✨️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- شاشة الترحيب (Intro Splash Screen) -->
+    <div id="intro-screen">
+        <div class="intro-content">
+            <h1 class="glow-text">✨️الرفيق اليومي✨️</h1>
+            <p>رفيقك لكل عبادة، صلاة، وتسبيح، وذكر</p>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي للموقع -->
+    <div class="main-container" id="main-content">
+        
+        <header>
+            <div class="top-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="display:flex; gap: 10px; align-items: center;">
+                    <button id="theme-toggle" class="outline-btn" style="border: none; font-size: 1.5rem; cursor: pointer; background: transparent; padding: 5px;">🌙</button>
+                    <button id="login-btn-header" class="outline-btn" style="padding: 5px 10px; font-size: 0.9rem;">تسجيل الدخول</button>
+                </div>
+                <div id="streak-counter" style="display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 1.2rem; color: #ff6b6b;">
+                    <span id="streak-days">0</span> <span>🔥</span>
+                </div>
+            </div>
+            <h1>✨️الرفيق اليومي✨️</h1>
+            <p>اجعل لسانك رطباً بذكر الله</p>
+            <!-- زر تفعيل إشعارات الصلاة -->
+            <button id="notify-permission-btn" class="gold-btn" style="margin-top: 10px;">تفعيل إشعارات الصلوات 🔔</button>
+        </header>
+
+        <div class="grid-layout">
+            <!-- مؤشر الإنجاز اليومي -->
+            <section class="card" style="grid-column: 1 / -1;">
+                <h2>إنجازك اليوم</h2>
+                <div class="progress-container" style="margin-top: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>الصلوات</span>
+                        <span id="prayer-progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar-bg" style="background-color: var(--light-green); height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                        <div id="prayer-progress-fill" style="background-color: var(--primary-green); height: 100%; width: 0%; transition: width 0.4s ease;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- مواقيت الصلاة ومتتبع الصلوات -->
+            <section class="card">
+                <h2>مواقيت الصلاة اليوم</h2>
+                <div id="next-prayer-box" class="next-prayer">جارِ تحميل مواقيت الصلاة...</div>
+                <div class="prayer-tracker">
+                    <h3>متتبع الصلوات اليومية</h3>
+                    <ul id="prayer-list">
+                        <li><span>الفجر</span><button class="pray-btn" data-prayer="Fajr">لم تُصلى</button></li>
+                        <li><span>الظهر</span><button class="pray-btn" data-prayer="Dhuhr">لم تُصلى</button></li>
+                        <li><span>العصر</span><button class="pray-btn" data-prayer="Asr">لم تُصلى</button></li>
+                        <li><span>المغرب</span><button class="pray-btn" data-prayer="Maghrib">لم تُصلى</button></li>
+                        <li><span>العشاء</span><button class="pray-btn" data-prayer="Isha">لم تُصلى</button></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- السبحة الإلكترونية -->
+            <section class="card misbaha-section">
+                <h2>السبحة الإلكترونية</h2>
+                <div class="dhikr-selector">
+                    <label for="dhikr-select">اختر الذكر:</label>
+                    <select id="dhikr-select">
+                        <option value="سبحان الله">سبحان الله</option>
+                        <option value="الحمد لله">الحمد لله</option>
+                        <option value="لا إله إلا الله">لا إله إلا الله</option>
+                        <option value="الله أكبر">الله أكبر</option>
+                        <option value="استغفر الله">استغفر الله</option>
+                    </select>
+                </div>
+                <div class="counter-display" id="counter-display">0</div>
+                <div class="misbaha-buttons">
+                    <button id="count-btn" class="gold-btn">تسبيح</button>
+                    <button id="reset-btn" class="outline-btn">إعادة تعيين</button>
+                </div>
+            </section>
+
+            <!-- أذكار الصباح والمساء -->
+            <section class="card azkar-section">
+                <h2>أذكار الصباح والمساء</h2>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button class="gold-btn" onclick="window.location.href='azkar.html?type=morning'" style="flex: 1;">أذكار الصباح ☀️</button>
+                    <button class="gold-btn" onclick="window.location.href='azkar.html?type=evening'" style="flex: 1; background-color: var(--primary-green);">أذكار المساء 🌙</button>
+                </div>
+            </section>
+
+            <!-- القرآن الكريم -->
+            <section class="card quran-section">
+    <h2>القرآن الكريم</h2>
+    <div class="quran-controls">
+        <select id="surah-select">
+            <option value="">اختر السورة للقراءة...</option>
+        </select>
+        <button id="load-surah-btn" class="gold-btn">قراءة السورة</button>
+    </div>
+    
+    <div id="bookmark-info" class="bookmark-badge"></div>
+</section>
+
+        </div>
+
+        <footer>
+            <p>صُمم بكل حب ليرافقك في طاعتك ✨️</p>
+        </footer>
+    </div>
+
+    <!-- نافذة تسجيل الدخول (Modal) -->
+    <div id="auth-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div class="card" style="width: 90%; max-width: 400px; padding: 30px; text-align: center;">
+            <h2 id="auth-title" style="margin-bottom: 20px;">تسجيل الدخول</h2>
+            <input type="email" id="auth-email" placeholder="البريد الإلكتروني" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-dark);">
+            <input type="password" id="auth-password" placeholder="كلمة المرور" style="width: 100%; padding: 10px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-dark);">
+            <button id="auth-submit-btn" class="gold-btn" style="width: 100%; margin-bottom: 10px;">دخول</button>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                <span id="auth-switch-text">ليس لديك حساب؟</span> 
+                <a href="#" id="auth-switch-btn" style="color: var(--primary-green); font-weight: bold;">إنشاء حساب</a>
+            </p>
+            <button id="auth-close-btn" class="outline-btn" style="margin-top: 15px;">إلغاء</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script type="module">
+        import { messaging, getToken, onMessage } from './firebase-config.js';
+        
+        document.getElementById("notify-permission-btn").addEventListener("click", async () => {
+            try {
+                // التحقق من دعم المتصفح للإشعارات (لأن بعض متصفحات الهواتف والـ WebViews لا تدعمها)
+                if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+                    alert("عفواً، متصفحك الحالي (أو الهاتف) لا يدعم خدمة الإشعارات. يُرجى المحاولة من متصفح مثل Chrome أو إضافة الموقع للشاشة الرئيسية.");
+                    return;
+                }
+
+                const permission = await Notification.requestPermission();
+                if (permission === "granted") {
+                    // استخدام مسار نسبي ليوافق GitHub Pages (بدلاً من / الذي يشير للجذر)
+                    const registration = await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+                    
+                    const token = await getToken(messaging, { 
+                        vapidKey: 'BAQ03NdH_kjTxMBPSx4FWuNrEuXgHj0dkh6O7qs0m5Ik3YwPiz25akdvULP4JyP7LfHKkQ_liIgIMDalJmWoF4c',
+                        serviceWorkerRegistration: registration 
+                    });
+                    
+                    if (token) {
+                        console.log("FCM Token:", token);
+                        alert("تم تفعيل إشعارات الصلاة بنجاح! 🔔\n(Firebase Cloud Messaging)");
+                    } else {
+                        alert("فشل في الحصول على التوكن.");
+                    }
+                } else {
+                    alert("تم رفض إذن الإشعارات.");
+                }
+            } catch (err) {
+                console.error("حدث خطأ أثناء تفعيل إشعارات Firebase:", err);
+                alert("حدث خطأ أثناء الاتصال بـ Firebase (تأكد من توافق المتصفح).");
+            }
+        });
+
+        onMessage(messaging, (payload) => {
+            console.log("Message received. ", payload);
+            alert(`إشعار جديد: ${payload.notification.title}\n${payload.notification.body}`);
+        });
+    </script>
+</body>
+</html>
